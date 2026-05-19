@@ -50,6 +50,13 @@ function getPreferredColorSchemeServerSnapshot(): "dark" | "light" {
     return "light"
 }
 
+function timeOfDayGreeting(hour: number): string {
+    if (hour >= 5 && hour < 12) return "Good morning"
+    if (hour >= 12 && hour < 17) return "Good afternoon"
+    if (hour >= 17 && hour < 22) return "Good evening"
+    return "Good night"
+}
+
 function getSpeechRecognitionCtor():
     | (new () => SpeechRecognition)
     | undefined {
@@ -68,8 +75,10 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
     const [now, setNow] = useState(() => new Date())
     const [settingsOpen, setSettingsOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
+    const [searchFocused, setSearchFocused] = useState(false)
     const [voiceListening, setVoiceListening] = useState(false)
     const imageSearchInputRef = useRef<HTMLInputElement>(null)
+    const searchInputRef = useRef<HTMLInputElement>(null)
     const speechRecognitionRef = useRef<SpeechRecognition | null>(null)
     const lastVoiceTranscriptRef = useRef("")
     const voiceUserStoppedRef = useRef(false)
@@ -92,6 +101,36 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
             speechRecognitionRef.current?.abort()
             speechRecognitionRef.current = null
         }
+    }, [])
+
+    useEffect(() => {
+        const handleShortcut = (event: KeyboardEvent) => {
+            if (event.defaultPrevented || event.isComposing) {
+                return
+            }
+
+            if (isEditableTarget(event.target)) {
+                return
+            }
+
+            const key = event.key.toLowerCase()
+            const isSlash = event.key === "/"
+            const isFind = (event.ctrlKey || event.metaKey) && key === "k"
+
+            if (!isSlash && !isFind) {
+                return
+            }
+
+            if (isSlash && (event.ctrlKey || event.metaKey || event.altKey)) {
+                return
+            }
+
+            event.preventDefault()
+            searchInputRef.current?.focus()
+        }
+
+        window.addEventListener("keydown", handleShortcut)
+        return () => window.removeEventListener("keydown", handleShortcut)
     }, [])
 
     const runSearchNavigation = useCallback(() => {
@@ -317,12 +356,78 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
                         id="dashboard-search"
                         name="q"
                         type="search"
+                        ref={searchInputRef}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => setSearchFocused(true)}
+                        onBlur={() => setSearchFocused(false)}
+                        onKeyDown={(event) => {
+                            if (event.key === "Escape") {
+                                event.currentTarget.blur()
+                            }
+                        }}
                         placeholder="Search the web or type a URL"
                         autoComplete="off"
-                        className="h-auto rounded-full border-border/80 bg-card py-3.5 pr-21 pl-14 text-center shadow-sm placeholder:text-muted-foreground focus-visible:ring-ring/25 sm:text-left"
+                        className="h-auto rounded-full border-border/80 bg-card py-3.5 pr-28 pl-14 text-center shadow-sm placeholder:text-muted-foreground focus-visible:ring-ring/25 sm:text-left"
                     />
+                    <div className="absolute top-1/2 right-2 z-1 flex -translate-y-1/2 items-center gap-0.5">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon-xs"
+                                    className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
+                                    aria-label="Search by image on Google"
+                                    onClick={handleImageSearchPick}
+                                >
+                                    <ScanSearch
+                                        className="size-5"
+                                        strokeWidth={2}
+                                        aria-hidden
+                                    />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" sideOffset={6}>
+                                Search by image (Google)
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon-xs"
+                                    className={
+                                        voiceListening
+                                            ? "size-8 shrink-0 rounded-full text-destructive hover:text-destructive"
+                                            : "size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
+                                    }
+                                    aria-label={
+                                        voiceListening
+                                            ? "Stop voice search"
+                                            : "Voice search"
+                                    }
+                                    aria-pressed={voiceListening}
+                                    disabled={!speechSupported}
+                                    onClick={toggleVoiceSearch}
+                                >
+                                    <Mic
+                                        className="size-5"
+                                        strokeWidth={2}
+                                        aria-hidden
+                                    />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" sideOffset={6}>
+                                {!speechSupported
+                                    ? "Voice search needs a supported browser (e.g. Chrome)"
+                                    : voiceListening
+                                      ? "Stop without searching"
+                                      : "Voice search (then opens results)"}
+                            </TooltipContent>
+                        </Tooltip>
+                    </div>
                 </form>
             </div>
         </header>
