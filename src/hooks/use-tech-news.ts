@@ -1,4 +1,8 @@
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import { useState, useEffect } from "react"
+
+dayjs.extend(relativeTime)
 
 export type NewsItem = {
   id: string
@@ -17,21 +21,6 @@ const CACHE_TTL_MS = 30 * 60 * 1000 // 30 minutes
 type CacheData = {
   timestamp: number
   items: NewsItem[]
-}
-
-// Helper to calculate relative time
-function getRelativeTime(dateString: string): string {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-
-  if (diffInSeconds < 60) return "Just now"
-  const diffInMinutes = Math.floor(diffInSeconds / 60)
-  if (diffInMinutes < 60) return `${diffInMinutes}m ago`
-  const diffInHours = Math.floor(diffInMinutes / 60)
-  if (diffInHours < 24) return `${diffInHours}h ago`
-  const diffInDays = Math.floor(diffInHours / 24)
-  return `${diffInDays}d ago`
 }
 
 export function useTechNews() {
@@ -80,7 +69,7 @@ export function useTechNews() {
               headline: hit.title,
               url: hit.url,
               source: source,
-              timeAgo: getRelativeTime(hit.created_at),
+              timeAgo: dayjs(hit.created_at).fromNow(),
               faviconUrl: `https://www.google.com/s2/favicons?domain=${source}&sz=64`,
             }
           })
