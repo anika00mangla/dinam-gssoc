@@ -58,21 +58,30 @@ export function useTechNews() {
         const data = await res.json()
 
         const fetchedItems: NewsItem[] = data.hits
-          .filter((hit: { title?: string; url?: string }) => hit.title && hit.url) // ensure valid data
-          .map((hit: { objectID: string; title: string; url: string; created_at: string }) => {
-            const urlObj = new URL(hit.url)
-            // Strip www. for cleaner source name
-            const source = urlObj.hostname.replace(/^www\./, "")
+          .filter(
+            (hit: { title?: string; url?: string }) => hit.title && hit.url
+          ) // ensure valid data
+          .map(
+            (hit: {
+              objectID: string
+              title: string
+              url: string
+              created_at: string
+            }) => {
+              const urlObj = new URL(hit.url)
+              // Strip www. for cleaner source name
+              const source = urlObj.hostname.replace(/^www\./, "")
 
-            return {
-              id: hit.objectID,
-              headline: hit.title,
-              url: hit.url,
-              source: source,
-              timeAgo: dayjs(hit.created_at).fromNow(),
-              faviconUrl: `https://www.google.com/s2/favicons?domain=${source}&sz=64`,
+              return {
+                id: hit.objectID,
+                headline: hit.title,
+                url: hit.url,
+                source: source,
+                timeAgo: dayjs(hit.created_at).fromNow(),
+                faviconUrl: `https://www.google.com/s2/favicons?domain=${source}&sz=64`,
+              }
             }
-          })
+          )
 
         if (isMounted) {
           setNews(fetchedItems)
