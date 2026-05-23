@@ -79,9 +79,9 @@ export function QuickLaunchPanel() {
 
   return (
     <>
-      <article className="rounded-2xl bg-card p-6 shadow-md ring-1 ring-border/40 lg:p-7">
+      <article className="glass-card rounded-xl p-8">
         <div className="flex items-center justify-between gap-2">
-          <h2 className={dashboardSectionLabelClassName}>Jump back in</h2>
+          <h2 className={dashboardSectionLabelClassName}>JUMP BACK IN</h2>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -115,7 +115,7 @@ export function QuickLaunchPanel() {
             </button>
           </p>
         ) : (
-          <div className="mt-6 grid grid-cols-4 gap-3 sm:gap-4">
+            <div className="mt-6 grid grid-cols-3 gap-x-4 gap-y-4 sm:gap-x-6 sm:gap-y-6 justify-items-center">
             {quickLaunchItems.map((item) => (
               <Tooltip key={item.id}>
                 <TooltipTrigger asChild>
@@ -130,8 +130,10 @@ export function QuickLaunchPanel() {
                     className="group flex flex-col items-center outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
                     aria-label={item.name}
                   >
-                    <span className="flex size-13 items-center justify-center rounded-full bg-card shadow-sm ring-1 ring-border/50 transition group-hover:shadow-md sm:size-14">
-                      <QuickLaunchIcon item={item} />
+                    <span className="shortcut-btn">
+                      <span className="icon-plate">
+                        <QuickLaunchIcon item={item} />
+                      </span>
                     </span>
                   </a>
                 </TooltipTrigger>

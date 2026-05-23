@@ -77,7 +77,7 @@ export function TasksSection() {
   const completedCount = todos.filter((t) => t.done).length
 
   return (
-    <article className="flex min-h-0 flex-col rounded-[1.75rem] bg-card p-6 shadow-md ring-1 ring-border/40 lg:p-7">
+    <article className="glass-card flex min-h-0 flex-col rounded-xl p-8">
       <div className="mb-6 flex shrink-0 items-center justify-between gap-3">
         <h2 className={dashboardSectionLabelClassName}>Focus items</h2>
         {completedCount > 0 && (
@@ -164,10 +164,10 @@ export function TasksSection() {
             if (e.key === "Enter") addTask()
           }}
           placeholder="New task title…"
-          className="min-w-0 flex-1 rounded-xl border border-border/80 bg-card px-3 py-2 text-sm text-card-foreground outline-none"
+          className="task-input min-w-0 flex-1 text-sm text-card-foreground outline-none"
         />
 
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/30 bg-muted/40 p-2.5">
+        <div className="task-controls flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Calendar className="size-3.5 text-primary/70" />
             <span>Start:</span>
@@ -197,7 +197,7 @@ export function TasksSection() {
               step="10"
               value={progress}
               onChange={(e) => setProgress(parseInt(e.target.value))}
-              className="h-1 w-16 appearance-none rounded-lg bg-border accent-primary"
+              className="h-1 w-36 appearance-none rounded-lg bg-border accent-primary"
             />
             <span className="min-w-[1.5rem] text-right font-mono text-[11px]">
               {progress}%
@@ -207,7 +207,7 @@ export function TasksSection() {
             type="button"
             variant="ghost"
             size="sm"
-            className="gap-1.5 text-xs text-primary"
+            className="gap-1.5 text-xs bg-primary text-primary-foreground px-4 py-1.5 rounded-lg shadow-sm"
             onClick={addTask}
           >
             <Plus className="size-4" strokeWidth={2.5} /> Add task

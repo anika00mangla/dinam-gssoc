@@ -276,18 +276,18 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
     <header className="w-full">
       <div className="flex items-start justify-between gap-4 px-1">
         <p
-          className="flex max-w-[min(100%,36rem)] flex-wrap items-center gap-x-1.5 gap-y-1 text-[0.8125rem] font-medium tracking-wide text-primary/70"
+          className="flex max-w-[min(100%,36rem)] flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] font-medium tracking-wider text-muted-foreground/80"
           role="status"
           aria-label={`${timeWithPeriod}, ${shortDateLine}, ${weather.city}, ${weather.temperature}°C`}
         >
           <span className="text-foreground/90">{timeWithPeriod}</span>
-          <span className="text-primary/55">•</span>
-          <span>{shortDateLine}</span>
-          <span className="text-primary/55">•</span>
-          <span className="inline-flex items-center gap-1 text-foreground/85">
+          <span className="text-muted-foreground/60">•</span>
+          <span className="uppercase">{shortDateLine}</span>
+          <span className="text-muted-foreground/60">•</span>
+          <span className="inline-flex items-center gap-1 text-muted-foreground/80">
             <WeatherIcon
               className="size-3.5 shrink-0 text-current"
-              strokeWidth={2}
+              strokeWidth={1.6}
               aria-hidden
             />
 
@@ -297,9 +297,9 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
                 ? weatherError
                 : weather.city}
 
-            <span className="text-primary/55">·</span>
+            <span className="text-muted-foreground/60">·</span>
 
-            <span className="text-muted-foreground">
+            <span className="text-muted-foreground text-sm">
               {weatherLoading
                 ? "Fetching weather..."
                 : weatherError

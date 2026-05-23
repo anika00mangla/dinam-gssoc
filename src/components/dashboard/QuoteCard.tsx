@@ -9,15 +9,15 @@ export function QuoteCard() {
   const { text, author } = useStoicQuote()
 
   return (
-    <article className="rounded-[1.75rem] bg-card p-7 shadow-md ring-1 ring-border/40 sm:p-8">
-      <h2 className={`${dashboardSectionLabelClassName} mb-3`}>
+    <article className="glass-card rounded-xl p-10 flex flex-col justify-center min-h-[280px]">
+      <h2 className={`${dashboardSectionLabelClassName} mb-6`}>
         Quote of the day
       </h2>
       <blockquote>
-        <p className="text-xl leading-relaxed font-bold tracking-tight text-card-foreground sm:text-2xl">
+        <p className="text-2xl sm:text-3xl md:text-4xl leading-tight font-medium tracking-tight text-muted-foreground/80">
           &ldquo;{text}&rdquo;
         </p>
-        <footer className="mt-5 text-[0.6875rem] font-semibold tracking-[0.12em] text-primary uppercase">
+        <footer className="mt-6 text-[0.6875rem] font-semibold tracking-[0.12em] text-primary uppercase">
           —{" "}
           <a
             href={wikipediaAuthorSearchUrl(author)}

@@ -58,26 +58,26 @@ export function TaskItem({
 }: TaskItemProps) {
   const formattedStart = formatTaskDate(todo.startDate)
   const formattedDue = formatTaskDate(todo.dueDate)
+  const todayIso = new Date().toISOString().split("T")[0]
+  const isDueToday = todo.dueDate === todayIso
 
   return (
-    <li className="group/task flex flex-col gap-2.5 rounded-xl border border-border/30 bg-muted/20 p-3.5 transition-colors hover:bg-muted/40">
-      {/* CORE COMPONENT GRID LAYOUT */}
-      <div className="grid w-full grid-cols-12 items-center gap-2">
-        {/* 1. Task Name Column (col-span-5) */}
-        <div className="col-span-5 flex min-w-0 items-center gap-2">
+    <li className="group/task flex flex-col gap-3 rounded-xl border border-border/30 bg-muted/15 p-4 transition-colors hover:bg-muted/35">
+      <div className="flex w-full items-center justify-between gap-4">
+        <div className="flex items-center gap-4 min-w-0">
           <button
             type="button"
             onClick={onToggle}
             disabled={isEditing}
             className={cn(
-              "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+              "w-10 h-10 flex items-center justify-center rounded-full border-2 transition-colors",
               todo.done
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-primary/35 bg-transparent",
+                : "border-primary/30 bg-transparent",
               isEditing && "pointer-events-none opacity-40"
             )}
           >
-            {todo.done ? <Check className="size-3" strokeWidth={3} /> : null}
+            {todo.done ? <Check className="size-4" strokeWidth={3} /> : null}
           </button>
 
           {isEditing ? (
@@ -88,7 +88,7 @@ export function TaskItem({
               onKeyDown={(e) => {
                 if (e.key === "Enter") onCommitEdit()
               }}
-              className="min-w-0 flex-1 rounded-lg border border-border bg-card px-3 py-1 text-sm font-medium text-card-foreground outline-none focus:border-primary"
+              className="min-w-0 flex-1 rounded-lg border border-border bg-card px-4 py-2 text-lg font-medium text-card-foreground outline-none focus:border-primary"
               autoFocus
             />
           ) : (
@@ -96,7 +96,7 @@ export function TaskItem({
               type="button"
               onClick={onToggle}
               className={cn(
-                "min-w-0 flex-1 truncate text-left text-sm",
+                "min-w-0 flex-1 text-left text-lg truncate",
                 todo.done
                   ? "text-muted-foreground line-through"
                   : "font-medium text-card-foreground",
@@ -108,59 +108,44 @@ export function TaskItem({
           )}
         </div>
 
-        {/* 2. Timeline Column (col-span-4) - CHANGED: justify-center to justify-start + pl-10 to nudge left */}
-        <div
-          className={cn(
-            "col-span-4 flex items-center justify-start truncate px-1 pl-10 font-mono text-xs select-none",
-            overdue
-              ? "animate-pulse font-bold text-destructive"
-              : "text-muted-foreground/90"
-          )}
-        >
-          {isEditing ? (
-            <span className="pl-2 font-sans text-[11px] text-muted-foreground italic">
-              Editing timeline...
-            </span>
-          ) : todo.startDate || todo.dueDate ? (
-            <span className="inline-flex flex-wrap items-center gap-1 text-[11px]">
-              <span>{formattedStart}</span>
-              <span className="mx-0.5 font-sans text-muted-foreground/50">
-                →
-              </span>
-              <span>{formattedDue}</span>
+        <div className="flex items-center gap-4">
+          {overdue ? (
+            <span className="text-xs font-semibold uppercase tracking-wider text-destructive">Urgent</span>
+          ) : todo.dueDate ? (
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+              {isDueToday ? "Today" : formattedDue}
             </span>
           ) : (
-            <span className="pl-6">—</span>
+            <span className="text-xs text-muted-foreground/60">&nbsp;</span>
           )}
-        </div>
 
-        {/* 3. Centered Progress Adjust Column (col-span-3) */}
-        <div className="col-span-3 flex min-w-0 items-center justify-center">
-          <div
-            className={cn(
-              "inline-flex items-center rounded-lg border border-border/60 bg-card p-0.5 shadow-sm",
-              isEditing && "pointer-events-none opacity-40"
-            )}
-          >
-            <button
-              type="button"
-              disabled={todo.done || currentVal === 0}
-              onClick={onDecrement}
-              className="flex size-6 items-center justify-center rounded-md font-sans text-sm font-bold text-muted-foreground hover:bg-muted"
+          <div className="hidden md:flex items-center gap-2">
+            <div
+              className={cn(
+                "inline-flex items-center rounded-lg border border-border/60 bg-card p-0.5 shadow-sm",
+                isEditing && "pointer-events-none opacity-40"
+              )}
             >
-              −
-            </button>
-            <span className="w-12 text-center font-mono text-xs font-bold">
-              {currentVal}%
-            </span>
-            <button
-              type="button"
-              disabled={todo.done || currentVal === 100}
-              onClick={onIncrement}
-              className="flex size-6 items-center justify-center rounded-md font-sans text-sm font-bold text-muted-foreground hover:bg-muted"
-            >
-              +
-            </button>
+              <button
+                type="button"
+                disabled={todo.done || currentVal === 0}
+                onClick={onDecrement}
+                className="flex size-6 items-center justify-center rounded-md font-sans text-sm font-bold text-muted-foreground hover:bg-muted"
+              >
+                −
+              </button>
+              <span className="w-12 text-center font-mono text-xs font-bold">
+                {currentVal}%
+              </span>
+              <button
+                type="button"
+                disabled={todo.done || currentVal === 100}
+                onClick={onIncrement}
+                className="flex size-6 items-center justify-center rounded-md font-sans text-sm font-bold text-muted-foreground hover:bg-muted"
+              >
+                +
+              </button>
+            </div>
           </div>
         </div>
       </div>

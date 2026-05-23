@@ -17,7 +17,7 @@ export function BookmarksSection() {
   const { bookmarks } = useDashboardState()
 
   return (
-    <article className="rounded-2xl bg-card p-6 shadow-md ring-1 ring-border/40 lg:p-7">
+    <article className="glass-card rounded-xl p-8">
       <h2 className={dashboardSectionLabelClassName}>Bookmarks</h2>
       <ul className="mt-5 flex flex-col gap-1">
         {bookmarks.map((item) => (

@@ -37,7 +37,7 @@ const App = () => {
           />
         </>
       ) : null}
-      <div className="relative z-0 mx-auto w-full max-w-6xl px-6 pt-8 pb-10 lg:px-8 lg:pb-12">
+      <div className="relative z-0 mx-auto w-full max-w-[1400px] px-[40px] pt-8 pb-10 lg:px-[40px] lg:pb-12">
         <DashboardHeader onOpenAssistant={() => setAssistantOpen(true)} />
 
         <div className="mt-14 grid grid-cols-1 gap-6 lg:mt-16 lg:grid-cols-12 lg:gap-8">

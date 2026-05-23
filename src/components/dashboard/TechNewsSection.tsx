@@ -7,7 +7,7 @@ export function TechNewsSection() {
   const { news, status } = useTechNews()
 
   return (
-    <article className="flex h-full flex-col rounded-[1.75rem] bg-card p-6 shadow-md ring-1 ring-border/40 lg:p-7">
+    <article className="glass-card flex h-full flex-col rounded-xl p-8">
       <div className="flex items-center justify-between">
         <h2 className={dashboardSectionLabelClassName}>Market intelligence</h2>
         {status === "loading" && (
