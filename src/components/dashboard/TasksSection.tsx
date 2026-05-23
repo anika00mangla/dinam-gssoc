@@ -164,6 +164,7 @@ export function TasksSection() {
             if (e.key === "Enter") addTask()
           }}
           placeholder="New task title…"
+          aria-label="Edit task title"
           className="task-input min-w-0 flex-1 text-sm text-card-foreground outline-none"
         />
 
@@ -175,6 +176,7 @@ export function TasksSection() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
+              aria-label="Start date"
               className="rounded border border-border/60 bg-card px-1.5 py-0.5 text-xs text-foreground"
             />
           </div>
@@ -185,6 +187,7 @@ export function TasksSection() {
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
+              aria-label="Due date"
               className="rounded border border-border/60 bg-card px-1.5 py-0.5 text-xs text-foreground"
             />
           </div>
@@ -197,6 +200,7 @@ export function TasksSection() {
               step="10"
               value={progress}
               onChange={(e) => setProgress(parseInt(e.target.value))}
+              aria-label="Edit task title"
               className="h-1 w-36 appearance-none rounded-lg bg-border accent-primary"
             />
             <span className="min-w-[1.5rem] text-right font-mono text-[11px]">
