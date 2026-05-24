@@ -91,7 +91,7 @@ export function TaskItem({
           <button
             type="button"
             aria-label="Drag to reorder task"
-            className="flex cursor-grab items-center justify-center rounded p-0.5 text-muted-foreground/30 opacity-0 transition-opacity group-hover/task:opacity-100 active:cursor-grabbing"
+            className="flex cursor-grab items-center justify-center rounded p-0.5 text-muted-foreground/30 opacity-0 transition-opacity group-hover/task:opacity-100 focus-visible:opacity-100 active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-hidden"
             {...attributes}
             {...listeners}
           >
