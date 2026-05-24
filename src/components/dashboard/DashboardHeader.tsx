@@ -1,4 +1,3 @@
-import dayjs from "dayjs"
 import {
   MessageSquare,
   Mic,
@@ -22,6 +21,8 @@ import {
 } from "react"
 
 import { DashboardSettingsModal } from "@/components/dashboard/DashboardSettingsModal"
+import { LiveClock } from "@/components/dashboard/LiveClock"
+import { LiveGreeting } from "@/components/dashboard/LiveGreeting"
 import { useTheme } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -107,7 +108,6 @@ function getWeatherCondition(code: number) {
 
 export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
   const { theme, setTheme, searchUrlTemplate } = useTheme()
-  const [now, setNow] = useState(() => new Date())
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchFocused, setSearchFocused] = useState(false)
@@ -125,20 +125,14 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
   )
   const resolvedTheme: "dark" | "light" =
     theme === "system" ? systemPref : theme
-
-  const { weather, weatherLoading, weatherError } = useWeather()
-
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(new Date()), 1000)
-    return () => window.clearInterval(id)
-  }, [])
-
+  
   useEffect(() => {
     return () => {
       speechRecognitionRef.current?.abort()
       speechRecognitionRef.current = null
     }
   }, [])
+
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.isComposing) {
@@ -168,6 +162,7 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
     window.addEventListener("keydown", handleShortcut)
     return () => window.removeEventListener("keydown", handleShortcut)
   }, [])
+  
 
   const runSearchNavigation = useCallback(() => {
     const href = resolveNavigationHref(searchQuery, searchUrlTemplate)
@@ -266,12 +261,6 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
     []
   )
 
-  const timeWithPeriod = dayjs(now).format("h:mm A")
-  const shortDateLine = dayjs(now).format("dddd, MMM D").toUpperCase()
-  const greeting = timeOfDayGreeting(dayjs(now).hour())
-  const weatherInfo = getWeatherCondition(weather.weatherCode)
-  const WeatherIcon = weatherInfo.icon
-
   return (
     <header className="w-full">
       <div className="flex items-start justify-between gap-4 px-1">
@@ -308,6 +297,9 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
             </span>
           </span>
         </p>
+        
+        <LiveClock />
+        
         <div className="flex shrink-0 items-center gap-0.5">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -381,12 +373,10 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
       />
 
       <div className="mt-10 flex flex-col items-center text-center sm:mt-14">
-        <p className="text-6xl font-bold tracking-tight text-foreground sm:text-7xl md:text-8xl">
-          {greeting}
-        </p>
+        <LiveGreeting />
 
         <form
-          className="relative mt-8 w-full max-w-xl sm:mt-10"
+          className="relative mt-6 w-full max-w-xl sm:mt-8"
           onSubmit={handleSearchSubmit}
         >
           <label htmlFor="dashboard-search" className="sr-only">

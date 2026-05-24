@@ -13,9 +13,7 @@ import {
 import {
   MOCK_BOOKMARKS,
   MOCK_QUICK_LAUNCH,
-  QUICK_LAUNCH_ICON_POOL,
   type BookmarkItem,
-  type QuickLaunchIconKey,
   type QuickLaunchItem,
 } from "@/data/dashboard-mock"
 
@@ -105,9 +103,8 @@ function loadQuickLaunch(): QuickLaunchItem[] {
         typeof x === "object" &&
         x !== null &&
         typeof (x as QuickLaunchItem).id === "string" &&
-        typeof (x as QuickLaunchItem).name === "string" &&
-        typeof (x as QuickLaunchItem).href === "string" &&
-        typeof (x as QuickLaunchItem).icon === "string"
+        typeof (x as QuickLaunchItem).title === "string" &&
+        typeof (x as QuickLaunchItem).url === "string"
     )
     return next.length > 0 ? next : [...MOCK_QUICK_LAUNCH]
   } catch {
@@ -133,14 +130,13 @@ export type DashboardStateContextValue = {
   deleteBookmark: (id: string) => void
   setQuickLaunchItems: (items: QuickLaunchItem[]) => void
   addQuickLaunchItem: (
-    name: string,
-    href: string,
-    icon?: QuickLaunchIconKey
+    title: string,
+    url: string
   ) => string
   removeQuickLaunchItem: (id: string) => void
   updateQuickLaunchItem: (
     id: string,
-    patch: Partial<Pick<QuickLaunchItem, "name" | "href" | "icon">>
+    patch: Partial<Pick<QuickLaunchItem, "title" | "url">>
   ) => void
 }
 
@@ -254,20 +250,17 @@ export function DashboardStateProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const addQuickLaunchItem = useCallback(
-    (name: string, href: string, icon?: QuickLaunchIconKey) => {
-      const hrefNorm = normalizeQuickLaunchHref(href)
-      const nameTrim = name.trim()
-      const resolvedName = nameTrim || fallbackNameFromQuickLaunchHref(hrefNorm)
-      if (!resolvedName && hrefNorm === "#") return ""
+    (title: string, url: string) => {
+      const urlNorm = normalizeQuickLaunchHref(url)
+      const titleTrim = title.trim()
+      const resolvedTitle = titleTrim || fallbackNameFromQuickLaunchHref(urlNorm)
+      if (!resolvedTitle && urlNorm === "#") return ""
       const id = `q-${crypto.randomUUID()}`
 
       setQuickLaunchState((prev) => {
-        const nextIcon: QuickLaunchIconKey =
-          icon ??
-          QUICK_LAUNCH_ICON_POOL[prev.length % QUICK_LAUNCH_ICON_POOL.length]!
         const next = [
           ...prev,
-          { id, name: resolvedName, href: hrefNorm, icon: nextIcon },
+          { id, title: resolvedTitle, url: urlNorm },
         ]
         localStorage.setItem(QUICK_LAUNCH_KEY, JSON.stringify(next))
         return next
@@ -288,22 +281,21 @@ export function DashboardStateProvider({ children }: { children: ReactNode }) {
   const updateQuickLaunchItem = useCallback(
     (
       id: string,
-      patch: Partial<Pick<QuickLaunchItem, "name" | "href" | "icon">>
+      patch: Partial<Pick<QuickLaunchItem, "title" | "url">>
     ) => {
       setQuickLaunchState((prev) => {
         const next = prev.map((q) => {
           if (q.id !== id) return q
-          let href = q.href
-          if (patch.href !== undefined)
-            href = normalizeQuickLaunchHref(patch.href)
-          let name = q.name
-          if (patch.name !== undefined)
-            name = patch.name.trim() || fallbackNameFromQuickLaunchHref(href)
+          let url = q.url
+          if (patch.url !== undefined)
+            url = normalizeQuickLaunchHref(patch.url)
+          let title = q.title
+          if (patch.title !== undefined)
+            title = patch.title.trim() || fallbackNameFromQuickLaunchHref(url)
           return {
             ...q,
-            name,
-            href,
-            ...(patch.icon !== undefined ? { icon: patch.icon } : {}),
+            title,
+            url,
           }
         })
         localStorage.setItem(QUICK_LAUNCH_KEY, JSON.stringify(next))
