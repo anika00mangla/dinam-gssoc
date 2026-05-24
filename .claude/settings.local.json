@@ -6,7 +6,8 @@
       "Bash(git config *)",
       "WebFetch(domain:polyformproject.org)",
       "Bash(ls -la \"e:\\\\Workspace\\\\dinam\\\\\" | head -30)",
-      "Read(//e/Workspace/**)"
+      "Read(//e/Workspace/**)",
+      "PowerShell(cd \"e:\\\\Workspace\\\\dinam\"; ls -Force | Where-Object { $_ -match \"coderabbit\" })"
     ]
   }
 }
