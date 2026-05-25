@@ -1,13 +1,12 @@
 "use client"
 
-import { Plus, Calendar, Percent } from "lucide-react"
+import { Plus, MoreHorizontal } from "lucide-react"
 import { useCallback, useState } from "react"
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
 import { useDashboardState } from "@/context/dashboard-state"
 import { Button } from "@/components/ui/button"
 import { TaskItem } from "./TaskItem"
-import { cn } from "@/lib/utils"
 
 export function TasksSection() {
   const {
@@ -20,35 +19,14 @@ export function TasksSection() {
   } = useDashboardState()
 
   const [newTaskLabel, setNewTaskLabel] = useState("")
-  const [startDate, setStartDate] = useState("")
-  const [dueDate, setDueDate] = useState("")
-  const [progress, setProgress] = useState(0)
-
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editLabel, setEditLabel] = useState("")
-  const [editStartDate, setEditStartDate] = useState("")
-  const [editDueDate, setEditDueDate] = useState("")
 
   const addTask = () => {
     const label = newTaskLabel.trim()
     if (!label) return
-    addTodo(label, startDate, dueDate, progress)
+    addTodo(label, "", "", 0)
     setNewTaskLabel("")
-    setStartDate("")
-    setDueDate("")
-    setProgress(0)
-  }
-
-  const startEditTodo = (
-    id: string,
-    label: string,
-    start: string,
-    due: string
-  ) => {
-    setEditingId(id)
-    setEditLabel(label)
-    setEditStartDate(start || "")
-    setEditDueDate(due || "")
   }
 
   const commitEditTodo = useCallback(() => {
@@ -58,165 +36,94 @@ export function TasksSection() {
       setEditingId(null)
       return
     }
-    const currentTodo = todos?.find((t) => t.id === editingId)
-    updateTodo(editingId, {
-      label,
-      startDate: editStartDate,
-      dueDate: editDueDate,
-      progress: currentTodo?.progress,
-    })
+    updateTodo(editingId, { label })
     setEditingId(null)
-  }, [editLabel, editStartDate, editDueDate, editingId, todos, updateTodo])
-
-  const isOverdue = (dateStr?: string, isDone?: boolean) => {
-    if (!dateStr || isDone) return false
-    const today = new Date().toISOString().split("T")[0]
-    return dateStr < today
-  }
+  }, [editLabel, editingId, updateTodo])
 
   const completedCount = todos.filter((t) => t.done).length
 
   return (
-    <article className="glass-card flex min-h-0 flex-col rounded-xl p-8">
-      <div className="mb-6 flex shrink-0 items-center justify-between gap-3">
-        <h2 className={dashboardSectionLabelClassName}>Focus items</h2>
-        {completedCount > 0 && (
-          <button
+    <article className="glass-card flex min-h-0 flex-col p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className={dashboardSectionLabelClassName}>Focus Items</h2>
+        <div className="flex items-center gap-1">
+           {completedCount > 0 && (
+            <button
+              type="button"
+              onClick={clearCompletedTodos}
+              className="text-[0.6rem] font-bold uppercase tracking-widest text-muted-foreground/40 hover:text-destructive transition-colors mr-2"
+            >
+              Clear ({completedCount})
+            </button>
+          )}
+          <Button
             type="button"
-            onClick={clearCompletedTodos}
-            className="rounded-lg border border-border/60 bg-background px-2.5 py-1 text-xs font-medium text-muted-foreground shadow-sm transition-colors hover:text-destructive"
+            variant="ghost"
+            size="icon-xs"
+            className="text-muted-foreground/50 hover:text-foreground"
           >
-            Clear completed ({completedCount})
-          </button>
-        )}
+            <MoreHorizontal size={14} />
+          </Button>
+        </div>
       </div>
 
-      {todos && todos.length > 0 && (
-        <div className="mb-3 grid grid-cols-12 items-center gap-2 border-b border-border/30 px-4 pb-2 text-xs font-bold tracking-wider text-muted-foreground/80 uppercase">
-          <div className="col-span-5">Task Name</div>
-          <div className="col-span-4 text-center">Timeline</div>
-          <div className="col-span-3 text-center">Progress Adjust</div>
-        </div>
-      )}
-
-      <div
-        className={cn(
-          "min-h-0 flex-1",
-          todos && todos.length > 3 && "max-h-64 overflow-y-auto pr-1"
-        )}
-      >
-        {!todos || todos.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No focus items yet. Add a task below to get started.
-          </p>
+      <div className="flex-1 min-h-0 overflow-y-auto pr-1 transition-all">
+        {(!todos || todos.length === 0) ? (
+          <div className="flex flex-col items-center justify-center py-2 opacity-40">
+            <p className="text-xs font-medium">No focus items yet...</p>
+          </div>
         ) : (
-          <ul className="flex flex-col gap-3">
-            {todos.map((todo) => {
-              if (!todo) return null
-              return (
-                <TaskItem
-                  key={todo.id}
-                  todo={todo}
-                  isEditing={editingId === todo.id}
-                  editLabel={editLabel}
-                  editStartDate={editStartDate}
-                  editDueDate={editDueDate}
-                  currentVal={todo.done ? 100 : todo.progress || 0}
-                  overdue={isOverdue(todo.dueDate, todo.done)}
-                  setEditLabel={setEditLabel}
-                  setEditStartDate={setEditStartDate}
-                  setEditDueDate={setEditDueDate}
-                  onToggle={() => toggleTodo(todo.id)}
-                  onDelete={() => deleteTodo(todo.id)}
-                  onStartEdit={() =>
-                    startEditTodo(
-                      todo.id,
-                      todo.label,
-                      todo.startDate || "",
-                      todo.dueDate || ""
-                    )
-                  }
-                  onCancelEdit={() => setEditingId(null)}
-                  onCommitEdit={commitEditTodo}
-                  onDecrement={() =>
-                    updateTodo(todo.id, {
-                      progress: Math.max((todo.progress || 0) - 10, 0),
-                    })
-                  }
-                  onIncrement={() =>
-                    updateTodo(todo.id, {
-                      progress: Math.min((todo.progress || 0) + 10, 100),
-                    })
-                  }
-                />
-              )
-            })}
+          <ul className="flex flex-col gap-1 mb-4">
+            {todos.map((todo) => (
+              <TaskItem
+                key={todo.id}
+                todo={todo}
+                isEditing={editingId === todo.id}
+                editLabel={editLabel}
+                editStartDate=""
+                editDueDate=""
+                currentVal={todo.done ? 100 : todo.progress || 0}
+                overdue={false}
+                setEditLabel={setEditLabel}
+                setEditStartDate={() => {}}
+                setEditDueDate={() => {}}
+                onToggle={() => toggleTodo(todo.id)}
+                onDelete={() => deleteTodo(todo.id)}
+                onStartEdit={() => {
+                  setEditingId(todo.id)
+                  setEditLabel(todo.label)
+                }}
+                onCancelEdit={() => setEditingId(null)}
+                onCommitEdit={commitEditTodo}
+                onDecrement={() => {}}
+                onIncrement={() => {}}
+              />
+            ))}
           </ul>
         )}
       </div>
 
-      <div className="mt-4 shrink-0 space-y-3 border-t border-border/50 pt-4">
-        <input
-          type="text"
-          value={newTaskLabel}
-          onChange={(e) => setNewTaskLabel(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") addTask()
-          }}
-          placeholder="New task title…"
-          aria-label="Edit task title"
-          className="task-input min-w-0 flex-1 text-sm text-card-foreground outline-none"
-        />
-
-        <div className="task-controls flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Calendar className="size-3.5 text-primary/70" />
-            <span>Start:</span>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              aria-label="Start date"
-              className="rounded border border-border/60 bg-card px-1.5 py-0.5 text-xs text-foreground"
-            />
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Calendar className="size-3.5 text-destructive/70" />
-            <span>Finish:</span>
-            <input
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              aria-label="Due date"
-              className="rounded border border-border/60 bg-card px-1.5 py-0.5 text-xs text-foreground"
-            />
-          </div>
-          <div className="flex min-w-[10rem] flex-1 items-center justify-end gap-1.5 text-xs text-muted-foreground">
-            <Percent className="size-3.5 text-primary/70" />
-            <input
-              type="range"
-              min="0"
-              max="100"
-              step="10"
-              value={progress}
-              onChange={(e) => setProgress(parseInt(e.target.value))}
-              aria-label="Edit task title"
-              className="h-1 w-36 appearance-none rounded-lg bg-border accent-primary"
-            />
-            <span className="min-w-[1.5rem] text-right font-mono text-[11px]">
-              {progress}%
-            </span>
-          </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="gap-1.5 text-xs bg-primary text-primary-foreground px-4 py-1.5 rounded-lg shadow-sm"
-            onClick={addTask}
-          >
-            <Plus className="size-4" strokeWidth={2.5} /> Add task
-          </Button>
+      <div className="mt-2 flex items-center gap-2">
+        <div className="relative flex-1">
+           <input
+            type="text"
+            value={newTaskLabel}
+            onChange={(e) => setNewTaskLabel(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") addTask()
+            }}
+            placeholder="New task title..."
+            className="w-full h-9 bg-white/5 rounded-xl px-4 text-xs outline-none border border-transparent focus:border-white/10 transition-all placeholder:text-muted-foreground/30"
+          />
         </div>
+        <Button
+          type="button"
+          onClick={addTask}
+          className="h-9 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-foreground font-semibold text-xs border border-white/5 shadow-sm transition-all active:scale-95"
+        >
+          <Plus className="size-3.5 mr-1" strokeWidth={3} />
+          Add task
+        </Button>
       </div>
     </article>
   )

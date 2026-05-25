@@ -39,9 +39,9 @@ function createBackgroundBlobs(): BackgroundBlob[] {
     borderRadius: `${randomBetween(36, 48)}% ${randomBetween(40, 50)}% ${randomBetween(36, 48)}% ${randomBetween(40, 50)}%`,
     animationClass: animations[i % 3],
     bgClass: bgClasses[i % bgClasses.length],
-    blurClass: i % 3 === 0 ? "blur-3xl" : "blur-2xl",
+    blurClass: "blur-[100px]",
     animationDelay: `${randomBetween(0, 12)}s`,
-    opacity: randomBetween(0.65, 1),
+    opacity: randomBetween(0.1, 0.25),
   }))
 }
 

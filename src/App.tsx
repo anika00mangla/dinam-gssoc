@@ -38,16 +38,15 @@ const App = () => {
           />
         </>
       ) : null}
-      <div className="relative z-0 mx-auto w-full max-w-[1400px] px-[40px] pt-8 pb-10 lg:px-[40px] lg:pb-12">
+      <div className="relative z-0 mx-auto w-full max-w-[1400px] px-8 pt-6 pb-10 lg:px-10 lg:pb-12">
         <DashboardHeader onOpenAssistant={() => setAssistantOpen(true)} />
 
-        <div className="mt-14 grid grid-cols-1 gap-6 lg:mt-16 lg:grid-cols-12 lg:gap-8">
-          <div className="flex flex-col gap-6 lg:col-span-3">
+        <div className="mt-8 grid grid-cols-1 gap-8 lg:mt-12 lg:grid-cols-12 lg:gap-8">
+          <div className="flex flex-col gap-8 lg:col-span-4">
             <QuickLaunchPanel />
             <BookmarksSection />
-
           </div>
-          <div className="flex flex-col gap-6 lg:col-span-5">
+          <div className="flex flex-col gap-8 lg:col-span-4">
             <QuoteCard />
             <div className="min-h-0 flex-1">
               <TasksSection />
