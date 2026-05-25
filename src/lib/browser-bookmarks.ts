@@ -8,14 +8,19 @@ export async function getBrowserBookmarks(): Promise<BrowserBookmark[]> {
     }
 
     chrome.bookmarks.getTree((tree) => {
-      resolve(tree as BrowserBookmark[])
+      resolve(
+        tree.map((node) => ({
+          id: node.id,
+          title: node.title,
+          url: node.url,
+          children: node.children,
+        }))
+      )
     })
   })
 }
 
-export function subscribeToBookmarkChanges(
-  callback: () => void
-) {
+export function subscribeToBookmarkChanges(callback: () => void) {
   if (!chrome?.bookmarks) {
     return () => {}
   }

@@ -1,13 +1,8 @@
 "use client"
 
-import {
-  ChevronDown,
-  ChevronRight,
-  ExternalLink,
-  Folder,
-} from "lucide-react"
+import { ChevronDown, ChevronRight, ExternalLink, Folder } from "lucide-react"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { BookmarkIcon } from "@/components/animated-icons/bookmark-icon"
 
@@ -21,30 +16,22 @@ import {
 
 import { cn } from "@/lib/utils"
 
-type ChromeBookmarkNode = {
-  id: string
-  title: string
-  url?: string
-  children?: ChromeBookmarkNode[]
-}
+import type { BrowserBookmark } from "@/types/browser-bookmarks"
+import { useBrowserBookmarks } from "@/hooks/use-browser-bookmarks"
 
 const MAX_DEPTH = 2
 
-function BookmarkFolder({
+const BookmarkFolder = ({
   node,
   depth,
 }: {
-  node: ChromeBookmarkNode
+  node: BrowserBookmark
   depth: number
-}) {
+}) => {
   const [open, setOpen] = useState(depth === 0)
 
   const children =
-    node.children?.filter(
-      (child) =>
-        child.title ||
-        child.url
-    ) || []
+    node.children?.filter((child) => child.title || child.url) || []
 
   if (depth > MAX_DEPTH) {
     return null
@@ -78,13 +65,9 @@ function BookmarkFolder({
       </button>
 
       {open ? (
-        <ul className="ml-3 border-l border-border/40 pl-2 space-y-1">
+        <ul className="ml-3 space-y-1 border-l border-border/40 pl-2">
           {children.slice(0, 30).map((child) => (
-            <BookmarkNode
-              key={child.id}
-              node={child}
-              depth={depth + 1}
-            />
+            <BookmarkNode key={child.id} node={child} depth={depth + 1} />
           ))}
         </ul>
       ) : null}
@@ -92,11 +75,7 @@ function BookmarkFolder({
   )
 }
 
-function BookmarkLink({
-  node,
-}: {
-  node: ChromeBookmarkNode
-}) {
+const BookmarkLink = ({ node }: { node: BrowserBookmark }) => {
   const favicon = `https://www.google.com/s2/favicons?domain=${node.url}&sz=64`
 
   return (
@@ -112,14 +91,13 @@ function BookmarkLink({
               "hover:bg-muted/70"
             )}
           >
-            <span className="relative flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted/50 overflow-hidden">
+            <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted/50">
               <img
                 src={favicon}
                 alt=""
                 className="size-4 object-contain"
                 onError={(e) => {
-                  e.currentTarget.style.display =
-                    "none"
+                  e.currentTarget.style.display = "none"
                 }}
               />
 
@@ -142,13 +120,9 @@ function BookmarkLink({
 
         <TooltipContent side="right">
           <div className="max-w-xs">
-            <p className="truncate font-medium">
-              {node.title}
-            </p>
+            <p className="truncate font-medium">{node.title}</p>
 
-            <p className="truncate text-xs opacity-70">
-              {node.url}
-            </p>
+            <p className="truncate text-xs opacity-70">{node.url}</p>
           </div>
         </TooltipContent>
       </Tooltip>
@@ -156,24 +130,17 @@ function BookmarkLink({
   )
 }
 
-function BookmarkNode({
+const BookmarkNode = ({
   node,
   depth,
 }: {
-  node: ChromeBookmarkNode
+  node: BrowserBookmark
   depth: number
-}) {
-  const hasChildren =
-    node.children &&
-    node.children.length > 0
+}) => {
+  const hasChildren = node.children && node.children.length > 0
 
   if (hasChildren) {
-    return (
-      <BookmarkFolder
-        node={node}
-        depth={depth}
-      />
-    )
+    return <BookmarkFolder node={node} depth={depth} />
   }
 
   if (!node.url) {
@@ -184,45 +151,13 @@ function BookmarkNode({
 }
 
 export function BookmarksSection() {
-  const [bookmarks, setBookmarks] = useState<
-    ChromeBookmarkNode[]
-  >([])
-
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function loadBookmarks() {
-      try {
-        if (
-          typeof chrome === "undefined" ||
-          !chrome.bookmarks
-        ) {
-          setLoading(false)
-          return
-        }
-
-        chrome.bookmarks.getTree((tree) => {
-          const filtered =
-            tree[0]?.children || []
-
-          setBookmarks(filtered)
-          setLoading(false)
-        })
-      } catch (error) {
-        console.error(error)
-        setLoading(false)
-      }
-    }
-
-    loadBookmarks()
-  }, [])
+  const { bookmarks, loading } =
+  useBrowserBookmarks()
 
   return (
     <article className="flex h-[32rem] min-h-0 flex-col overflow-hidden rounded-2xl bg-card p-6 shadow-md ring-1 ring-border/40 lg:p-7">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className={dashboardSectionLabelClassName}>
-          Browser Bookmarks
-        </h2>
+        <h2 className={dashboardSectionLabelClassName}>Browser Bookmarks</h2>
 
         {!loading ? (
           <span className="text-xs text-muted-foreground">
@@ -237,13 +172,9 @@ export function BookmarksSection() {
         </div>
       ) : (
         <div className="min-h-0 flex-1 overflow-hidden">
-          <ul className="h-full overflow-y-auto space-y-1 pr-1">
+          <ul className="h-full space-y-1 overflow-y-auto pr-1">
             {bookmarks.map((bookmark) => (
-              <BookmarkNode
-                key={bookmark.id}
-                node={bookmark}
-                depth={0}
-              />
+              <BookmarkNode key={bookmark.id} node={bookmark} depth={0} />
             ))}
           </ul>
         </div>
