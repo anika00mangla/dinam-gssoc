@@ -6,6 +6,8 @@ import {
   Search,
   Settings,
   Sun,
+  Cloud,
+  CloudRain,
 } from "lucide-react"
 import {
   type ChangeEvent,
@@ -34,6 +36,28 @@ import {
   openGoogleSearchByImage,
   resolveNavigationHref,
 } from "@/lib/search-engine"
+import { useWeather } from "@/hooks/use-weather"
+
+function getWeatherCondition(code: number) {
+  if (code === 0) {
+    return {
+      label: "Sunny",
+      icon: Sun,
+    }
+  }
+
+  if (code >= 1 && code <= 3) {
+    return {
+      label: "Cloudy",
+      icon: Cloud,
+    }
+  }
+
+  return {
+    label: "Rainy",
+    icon: CloudRain,
+  }
+}
 
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
 

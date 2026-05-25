@@ -2,20 +2,7 @@
 
 import { Plus, MoreHorizontal } from "lucide-react"
 import { useCallback, useState } from "react"
-import {
-  DndContext,
-  PointerSensor,
-  KeyboardSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core"
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
+// DnD temporarily removed to avoid heavy dependency when not in use.
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
 import { useDashboardState } from "@/context/dashboard-state"
@@ -23,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { TaskItem } from "./TaskItem"
 
 export function TasksSection() {
-  const { todos = [], addTodo, clearCompletedTodos, reorderTodos } = useDashboardState()
+  const { todos = [], addTodo, toggleTodo, updateTodo, deleteTodo, clearCompletedTodos } = useDashboardState()
   const [newTaskLabel, setNewTaskLabel] = useState("")
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editLabel, setEditLabel] = useState("")
@@ -46,28 +33,19 @@ export function TasksSection() {
     setEditingId(null)
   }, [editLabel, editingId, updateTodo])
 
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event
-      if (over && active.id !== over.id) {
-        reorderTodos(String(active.id), String(over.id))
-      }
-    },
-    [reorderTodos]
-  )
 
   return (
     <article className="glass-card flex min-h-0 flex-col p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className={dashboardSectionLabelClassName}>Focus Items</h2>
         <div className="flex items-center gap-1">
-           {completedCount > 0 && (
+           {todos.filter((t) => t.done).length > 0 && (
             <button
               type="button"
               onClick={clearCompletedTodos}
               className="text-[0.6rem] font-bold uppercase tracking-widest text-muted-foreground/40 hover:text-destructive transition-colors mr-2"
             >
-              Clear ({completedCount})
+              Clear ({todos.filter((t) => t.done).length})
             </button>
           )}
           <Button

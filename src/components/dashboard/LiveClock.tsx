@@ -1,5 +1,4 @@
 import dayjs from "dayjs"
-import { Moon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useWeather } from "@/hooks/use-weather"
 
@@ -19,7 +18,7 @@ export function LiveClock() {
   const dateLine = dayjs(now).format("dddd, MMMM D")
 
   return (
-    <div className="flex flex-col items-start select-none" role="status">
+    <div className="flex flex-col items-start select-none">
       <div className="flex items-baseline gap-3 leading-none">
         <span className="text-3xl font-bold tracking-tight text-foreground">
           {time}

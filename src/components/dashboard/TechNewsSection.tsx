@@ -58,7 +58,7 @@ export function TechNewsSection() {
                   href={item.url}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group/news flex items-start justify-between gap-4 py-0.5 outline-none"
+                  className="group/news flex items-start justify-between gap-4 py-0.5 focus-visible:ring-2 focus-visible:ring-white/10 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
