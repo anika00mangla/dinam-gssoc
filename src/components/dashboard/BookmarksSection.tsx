@@ -42,6 +42,12 @@ const BookmarkFolder = ({
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-label={
+          open
+            ? `Collapse ${node.title || "bookmarks"}`
+            : `Expand ${node.title || "bookmarks"}`
+        }
         className={cn(
           "flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors",
           "hover:bg-muted/60"
@@ -76,8 +82,16 @@ const BookmarkFolder = ({
 }
 
 const BookmarkLink = ({ node }: { node: BrowserBookmark }) => {
-  const favicon = `https://www.google.com/s2/favicons?domain=${node.url}&sz=64`
+  const [faviconError, setFaviconError] = useState(false)
+  let domain = ""
 
+  try {
+    domain = node.url ? new URL(node.url).hostname : ""
+  } catch {
+    domain = ""
+  }
+
+  const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
   return (
     <li>
       <Tooltip>
@@ -92,14 +106,14 @@ const BookmarkLink = ({ node }: { node: BrowserBookmark }) => {
             )}
           >
             <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted/50">
-              <img
-                src={favicon}
-                alt=""
-                className="size-4 object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none"
-                }}
-              />
+              {!faviconError ? (
+                <img
+                  src={favicon}
+                  alt=""
+                  className="size-4 object-contain"
+                  onError={() => setFaviconError(true)}
+                />
+              ) : null}
 
               <BookmarkIcon
                 size={14}
@@ -151,8 +165,7 @@ const BookmarkNode = ({
 }
 
 export function BookmarksSection() {
-  const { bookmarks, loading } =
-  useBrowserBookmarks()
+  const { bookmarks, loading } = useBrowserBookmarks()
 
   return (
     <article className="flex h-[32rem] min-h-0 flex-col overflow-hidden rounded-2xl bg-card p-6 shadow-md ring-1 ring-border/40 lg:p-7">
