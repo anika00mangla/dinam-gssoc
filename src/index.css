@@ -46,6 +46,7 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --max-width-dashboard: 87.5rem; /* 1400px */
 }
 
 :root {
@@ -243,26 +244,4 @@ article{
   font-size: 0.75rem;
   font-weight: 500;
   color: rgba(255,255,255,0.8);
-}
-
-/* Task controls container */
-.task-controls {
-  border-radius: 12px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.04);
-  padding: 18px;
-}
-.task-input { border-radius: 12px; padding: 12px; background: transparent; border: 1px solid rgba(255,255,255,0.04); }
-
-/* Range slider styling */
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 100%);
-  border-radius: 999px;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }

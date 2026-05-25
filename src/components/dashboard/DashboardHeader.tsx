@@ -6,8 +6,6 @@ import {
   Search,
   Settings,
   Sun,
-  Cloud,
-  CloudRain,
 } from "lucide-react"
 import {
   type ChangeEvent,
@@ -36,28 +34,7 @@ import {
   openGoogleSearchByImage,
   resolveNavigationHref,
 } from "@/lib/search-engine"
-import { useWeather } from "@/hooks/use-weather"
 
-function getWeatherCondition(code: number) {
-  if (code === 0) {
-    return {
-      label: "Sunny",
-      icon: Sun,
-    }
-  }
-
-  if (code >= 1 && code <= 3) {
-    return {
-      label: "Cloudy",
-      icon: Cloud,
-    }
-  }
-
-  return {
-    label: "Rainy",
-    icon: CloudRain,
-  }
-}
 
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
 
@@ -111,7 +88,6 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
   const lastVoiceTranscriptRef = useRef("")
   const voiceUserStoppedRef = useRef(false)
   const voiceSessionFailedRef = useRef(false)
-  const { weather } = useWeather()
   const systemPref = useSyncExternalStore(
     subscribePreferredColorScheme,
     getPreferredColorSchemeSnapshot,
@@ -253,9 +229,6 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
     () => getSpeechRecognitionCtor() !== undefined,
     []
   )
-  const weatherInfo = getWeatherCondition(weather.weatherCode)
-  const WeatherIcon = weatherInfo.icon
-
   return (
     <header className="relative w-full">
       <div className="flex items-start justify-between">
@@ -338,17 +311,8 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
       />
 
       <div className="mt-4 flex flex-col items-center text-center">
-        <div className="mb-6 flex items-center justify-center gap-6">
+        <div className="mb-6">
           <LiveGreeting />
-          <div className="relative size-24 hidden sm:block">
-             <div className="absolute inset-0 bg-yellow-400/20 blur-2xl rounded-full" />
-             <WeatherIcon className="relative size-full text-yellow-400 fill-yellow-400/10" strokeWidth={1.5} />
-             {weatherInfo.label === "Cloudy" && (
-                <div className="absolute -bottom-1 -right-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10">
-                   <Cloud className="size-8 text-white fill-white/10" strokeWidth={1.5} />
-                </div>
-             )}
-          </div>
         </div>
 
         <form

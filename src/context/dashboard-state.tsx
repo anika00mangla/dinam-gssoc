@@ -10,23 +10,14 @@ import {
   type ReactNode,
 } from "react"
 
-// Lightweight local replacement for `arrayMove` to avoid depending on @dnd-kit/sortable
-function arrayMove<T>(array: T[], from: number, to: number) {
-  const next = array.slice()
-  if (from < 0 || from >= next.length) return next
-  if (to < 0) to = 0
-  if (to >= next.length) to = next.length - 1
-  const [item] = next.splice(from, 1)
-  next.splice(to, 0, item)
-  return next
-}
-
 import {
   MOCK_BOOKMARKS,
   MOCK_QUICK_LAUNCH,
   type BookmarkItem,
   type QuickLaunchItem,
 } from "@/data/dashboard-mock"
+
+import { arrayMove } from "@dnd-kit/sortable"
 
 import {
   fallbackNameFromQuickLaunchHref,

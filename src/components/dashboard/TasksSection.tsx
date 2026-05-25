@@ -1,7 +1,7 @@
 "use client"
 
-import { Plus, MoreHorizontal } from "lucide-react"
-import { useCallback, useState } from "react"
+import { Plus } from "lucide-react"
+import { useState } from "react"
 // DnD temporarily removed to avoid heavy dependency when not in use.
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
@@ -12,8 +12,6 @@ import { TaskItem } from "./TaskItem"
 export function TasksSection() {
   const { todos = [], addTodo, toggleTodo, updateTodo, deleteTodo, clearCompletedTodos } = useDashboardState()
   const [newTaskLabel, setNewTaskLabel] = useState("")
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editLabel, setEditLabel] = useState("")
 
   const addTask = () => {
     const label = newTaskLabel.trim()
@@ -21,18 +19,6 @@ export function TasksSection() {
     addTodo(label, "", "", 0)
     setNewTaskLabel("")
   }
-
-  const commitEditTodo = useCallback(() => {
-    if (!editingId) return
-    const label = editLabel.trim()
-    if (!label) {
-      setEditingId(null)
-      return
-    }
-    updateTodo(editingId, { label })
-    setEditingId(null)
-  }, [editLabel, editingId, updateTodo])
-
 
   return (
     <article className="glass-card flex min-h-0 flex-col p-6">
@@ -48,14 +34,6 @@ export function TasksSection() {
               Clear ({todos.filter((t) => t.done).length})
             </button>
           )}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground/50 hover:text-foreground"
-          >
-            <MoreHorizontal size={14} />
-          </Button>
         </div>
       </div>
 
@@ -70,25 +48,9 @@ export function TasksSection() {
               <TaskItem
                 key={todo.id}
                 todo={todo}
-                isEditing={editingId === todo.id}
-                editLabel={editLabel}
-                editStartDate=""
-                editDueDate=""
-                currentVal={todo.done ? 100 : todo.progress || 0}
-                overdue={false}
-                setEditLabel={setEditLabel}
-                setEditStartDate={() => {}}
-                setEditDueDate={() => {}}
                 onToggle={() => toggleTodo(todo.id)}
                 onDelete={() => deleteTodo(todo.id)}
-                onStartEdit={() => {
-                  setEditingId(todo.id)
-                  setEditLabel(todo.label)
-                }}
-                onCancelEdit={() => setEditingId(null)}
-                onCommitEdit={commitEditTodo}
-                onDecrement={() => {}}
-                onIncrement={() => {}}
+                onUpdate={(label) => updateTodo(todo.id, { label })}
               />
             ))}
           </ul>

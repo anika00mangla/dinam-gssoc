@@ -1,5 +1,4 @@
-import { Globe, RefreshCw, MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Globe, RefreshCw } from "lucide-react"
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
 import { useTechNews } from "@/hooks/use-tech-news"
@@ -15,14 +14,6 @@ export function TechNewsSection() {
           {status === "loading" && (
             <RefreshCw className="size-3 animate-spin text-muted-foreground/30 mr-1" />
           )}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground/50 hover:text-foreground"
-          >
-            <MoreHorizontal size={14} />
-          </Button>
         </div>
       </div>
 

@@ -2,7 +2,6 @@
 
 import {
   ExternalLink,
-  MoreHorizontal,
   TypeIcon,
   PaletteIcon,
   FileTextIcon,
@@ -10,7 +9,6 @@ import {
 import { BookmarkIcon } from "@/components/animated-icons/bookmark-icon"
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
-import { Button } from "@/components/ui/button"
 import { useDashboardState } from "@/context/dashboard-state"
 import { cn } from "@/lib/utils"
 
@@ -30,14 +28,6 @@ export function BookmarksSection() {
     <article className="glass-card p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className={dashboardSectionLabelClassName}>Bookmarks</h2>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-xs"
-          className="text-muted-foreground/50 hover:text-foreground"
-        >
-          <MoreHorizontal size={14} />
-        </Button>
       </div>
       
       <ul className="flex flex-col gap-2">
