@@ -60,7 +60,13 @@ export const MOCK_BOOKMARKS: BookmarkItem[] = [
 
 export const MOCK_STREAK_DAYS = 5
 
+// Added back to fix the LiveClock.tsx compile error requested by Ashutosh
+// Added back to fix the LiveClock.tsx compile error requested by Ashutosh
 export const MOCK_WEATHER = {
-  city: "San Francisco",
-  summary: "28°C · Sunny",
-} as const
+  temperature: 24,
+  condition: "Partly Cloudy",
+  city: "Ghaziabad",
+  summary: "Partly Cloudy",
+  humidity: 62,
+  windSpeed: 12
+};
