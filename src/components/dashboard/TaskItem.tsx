@@ -1,25 +1,11 @@
 import { Check, Pencil, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { type DashboardTodo } from "@/context/dashboard-state"
+import { type DashboardTodo, useDashboardState } from "@/context/dashboard-state"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 interface TaskItemProps {
   todo: DashboardTodo
-  isEditing: boolean
-  editLabel: string
-  editStartDate: string
-  editDueDate: string
-  currentVal: number
-  overdue: boolean
-  setEditLabel: (val: string) => void
-  setEditStartDate: (val: string) => void
-  setEditDueDate: (val: string) => void
-  onToggle: () => void
-  onDelete: () => void
-  onStartEdit: () => void
-  onCancelEdit: () => void
-  onCommitEdit: () => void
-  onDecrement: () => void
-  onIncrement: () => void
 }
 
 export function TaskItem({

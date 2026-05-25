@@ -2,6 +2,20 @@
 
 import { Plus, MoreHorizontal } from "lucide-react"
 import { useCallback, useState } from "react"
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
 import { useDashboardState } from "@/context/dashboard-state"
@@ -9,15 +23,7 @@ import { Button } from "@/components/ui/button"
 import { TaskItem } from "./TaskItem"
 
 export function TasksSection() {
-  const {
-    todos = [],
-    toggleTodo,
-    deleteTodo,
-    addTodo,
-    updateTodo,
-    clearCompletedTodos,
-  } = useDashboardState()
-
+  const { todos = [], addTodo, clearCompletedTodos, reorderTodos } = useDashboardState()
   const [newTaskLabel, setNewTaskLabel] = useState("")
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editLabel, setEditLabel] = useState("")
@@ -40,7 +46,15 @@ export function TasksSection() {
     setEditingId(null)
   }, [editLabel, editingId, updateTodo])
 
-  const completedCount = todos.filter((t) => t.done).length
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event
+      if (over && active.id !== over.id) {
+        reorderTodos(String(active.id), String(over.id))
+      }
+    },
+    [reorderTodos]
+  )
 
   return (
     <article className="glass-card flex min-h-0 flex-col p-6">

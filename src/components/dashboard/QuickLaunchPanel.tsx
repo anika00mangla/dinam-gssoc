@@ -32,7 +32,7 @@ async function draftToItems(
     if (!titleRaw && url === "#") continue
 
     const existing = existingItems.find((e) => e.id === slot.id)
-    
+
     let title = titleRaw
     let description = slot.description
     let favicon = slot.favicon
