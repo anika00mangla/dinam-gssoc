@@ -18,6 +18,8 @@ const MAX_QUICK_LAUNCH_LINKS = 8
 
 export type QuickLaunchDraftSlot = {
   id?: string
+  /** Stable client-side key assigned at draft-creation time. Always present. */
+  draftKey: string
   title: string
   url: string
   description?: string
@@ -49,7 +51,7 @@ export function QuickLaunchEditModal({
   const addSlot = () => {
     onDraftChange((prev) => {
       if (prev.length >= MAX_QUICK_LAUNCH_LINKS) return prev
-      return [...prev, { title: "", url: "" }]
+      return [...prev, { draftKey: crypto.randomUUID(), title: "", url: "" }]
     })
   }
 
@@ -77,7 +79,7 @@ export function QuickLaunchEditModal({
         <div className="mt-4 max-h-[min(50vh,20rem)] space-y-3 overflow-y-auto pr-1">
           {draft.map((slot, index) => (
             <div
-              key={slot.id ?? `draft-${index}`}
+              key={slot.draftKey}
               className="flex flex-col gap-2 sm:flex-row sm:items-end"
             >
               <div className="grid min-w-0 flex-1 grid-cols-1 gap-2 sm:grid-cols-2">
