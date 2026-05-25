@@ -175,7 +175,30 @@ const BookmarkNode = ({
     return null
   }
 
-  return <BookmarkLink node={node} />
+  let safeUrl: string | null = null
+
+  try {
+    const parsed = new URL(node.url)
+
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      safeUrl = parsed.toString()
+    }
+  } catch {
+    safeUrl = null
+  }
+
+  if (!safeUrl) {
+    return null
+  }
+
+  return (
+    <BookmarkLink
+      node={{
+        ...node,
+        url: safeUrl,
+      }}
+    />
+  )
 }
 
 export function BookmarksSection() {
