@@ -11,8 +11,10 @@ import {
 import { Globe } from "lucide-react"
 import { fetchQuickLinkMetadata, normalizeUrl } from "@/lib/quick-link-metadata"
 import { cn } from "@/lib/utils"
-import { useDashboardState } from "@/context/dashboard-state"
-import type { QuickLaunchItem } from "@/data/dashboard-mock"
+import {
+  useDashboardState,
+  type QuickLaunchItem,
+} from "@/context/dashboard-state"
 
 import {
   QuickLaunchEditModal,
@@ -76,7 +78,6 @@ export function QuickLaunchPanel() {
   const [draft, setDraft] = useState<QuickLaunchDraftSlot[]>(() =>
     quickLaunchItems.map((item) => ({
       id: item.id,
-      draftKey: item.id,
       title: item.title,
       url: item.url === "#" ? "" : item.url,
       description: item.description,
@@ -89,13 +90,12 @@ export function QuickLaunchPanel() {
       quickLaunchItems.length > 0
         ? quickLaunchItems.map((item) => ({
             id: item.id,
-            draftKey: item.id,
             title: item.title,
             url: item.url === "#" ? "" : item.url,
             description: item.description,
             favicon: item.favicon,
           }))
-        : [{ draftKey: crypto.randomUUID(), title: "", url: "" }]
+        : [{ title: "", url: "" }]
     )
     setModalOpen(true)
   }
