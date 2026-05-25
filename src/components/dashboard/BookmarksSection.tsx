@@ -2,7 +2,7 @@
 
 import { ChevronDown, ChevronRight, ExternalLink, Folder } from "lucide-react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { BookmarkIcon } from "@/components/animated-icons/bookmark-icon"
 
@@ -37,23 +37,33 @@ const BookmarkFolder = ({
     return null
   }
 
+  const canExpand = depth < MAX_DEPTH && children.length > 0
+
   return (
     <li className="space-y-1">
       <button
         type="button"
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
+        onClick={() => {
+          if (canExpand) {
+            setOpen(!open)
+          }
+        }}
+        aria-expanded={canExpand ? open : undefined}
         aria-label={
-          open
-            ? `Collapse ${node.title || "bookmarks"}`
-            : `Expand ${node.title || "bookmarks"}`
+          canExpand
+            ? open
+              ? `Collapse ${node.title || "bookmarks"}`
+              : `Expand ${node.title || "bookmarks"}`
+            : `${node.title || "bookmarks"} (no deeper items)`
         }
+        disabled={!canExpand}
         className={cn(
           "flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors",
-          "hover:bg-muted/60"
+          "hover:bg-muted/60",
+          !canExpand && "cursor-default opacity-70 hover:bg-transparent"
         )}
       >
-        {open ? (
+        {canExpand && open ? (
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
         ) : (
           <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
@@ -70,7 +80,7 @@ const BookmarkFolder = ({
         </span>
       </button>
 
-      {open ? (
+      {canExpand && open ? (
         <ul className="ml-3 space-y-1 border-l border-border/40 pl-2">
           {children.slice(0, 30).map((child) => (
             <BookmarkNode key={child.id} node={child} depth={depth + 1} />
@@ -83,6 +93,10 @@ const BookmarkFolder = ({
 
 const BookmarkLink = ({ node }: { node: BrowserBookmark }) => {
   const [faviconError, setFaviconError] = useState(false)
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFaviconError(false)
+  }, [node.url])
   let domain = ""
 
   try {
