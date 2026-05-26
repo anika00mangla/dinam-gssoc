@@ -2,11 +2,11 @@
 
 import { Plus } from "lucide-react"
 import { useState } from "react"
-// DnD temporarily removed to avoid heavy dependency when not in use.
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
-import { useDashboardState } from "@/context/dashboard-state"
 import { Button } from "@/components/ui/button"
+import { useDashboardState } from "@/context/dashboard-state"
+
 import { TaskItem } from "./TaskItem"
 
 export function TasksSection() {
@@ -20,30 +20,32 @@ export function TasksSection() {
     setNewTaskLabel("")
   }
 
+  const completedCount = todos.filter((t) => t.done).length
+
   return (
     <article className="glass-card flex min-h-0 flex-col p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className={dashboardSectionLabelClassName}>Focus Items</h2>
         <div className="flex items-center gap-1">
-           {todos.filter((t) => t.done).length > 0 && (
+          {completedCount > 0 && (
             <button
               type="button"
               onClick={clearCompletedTodos}
-              className="text-[0.6rem] font-bold uppercase tracking-widest text-muted-foreground/40 hover:text-destructive transition-colors mr-2"
+              className="mr-2 text-[0.6rem] font-bold uppercase tracking-widest text-muted-foreground/40 transition-colors hover:text-destructive"
             >
-              Clear ({todos.filter((t) => t.done).length})
+              Clear ({completedCount})
             </button>
           )}
         </div>
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto pr-1 transition-all">
-        {(!todos || todos.length === 0) ? (
+        {!todos || todos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-2 opacity-40">
             <p className="text-xs font-medium">No focus items yet...</p>
           </div>
         ) : (
-          <ul className="flex flex-col gap-1 mb-4">
+          <ul className="mb-4 flex flex-col gap-1">
             {todos.map((todo) => (
               <TaskItem
                 key={todo.id}
@@ -59,7 +61,7 @@ export function TasksSection() {
 
       <div className="mt-2 flex items-center gap-2">
         <div className="relative flex-1">
-           <input
+          <input
             type="text"
             value={newTaskLabel}
             onChange={(e) => setNewTaskLabel(e.target.value)}
@@ -67,15 +69,15 @@ export function TasksSection() {
               if (e.key === "Enter") addTask()
             }}
             placeholder="New task title..."
-            className="w-full h-9 bg-white/5 rounded-xl px-4 text-xs outline-none border border-transparent focus:border-white/10 transition-all placeholder:text-muted-foreground/30"
+            className="h-9 w-full rounded-xl border border-transparent bg-white/5 px-4 text-xs outline-none transition-all placeholder:text-muted-foreground/30 focus:border-white/10"
           />
         </div>
         <Button
           type="button"
           onClick={addTask}
-          className="h-9 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-foreground font-semibold text-xs border border-white/5 shadow-sm transition-all active:scale-95"
+          className="h-9 rounded-xl border border-white/5 bg-white/5 px-4 text-xs font-semibold text-foreground shadow-sm transition-all hover:bg-white/10 active:scale-95"
         >
-          <Plus className="size-3.5 mr-1" strokeWidth={3} />
+          <Plus className="mr-1 size-3.5" strokeWidth={3} />
           Add task
         </Button>
       </div>

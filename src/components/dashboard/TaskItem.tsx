@@ -1,4 +1,3 @@
-import * as React from "react"
 import { useState, useCallback } from "react"
 import { Check, Pencil, Trash2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -34,7 +33,7 @@ export function TaskItem({ todo, onToggle, onDelete, onUpdate }: TaskItemProps) 
   }, [editLabel, todo.label, onUpdate])
 
   return (
-    <li className="group/task flex items-center justify-between gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors">
+    <li className="group/task flex items-center justify-between gap-3 rounded-xl p-2 transition-colors hover:bg-white/5">
       <div className="flex items-center gap-3 min-w-0 flex-1">
         <button
           type="button"
@@ -79,7 +78,7 @@ export function TaskItem({ todo, onToggle, onDelete, onUpdate }: TaskItemProps) 
         )}
       </div>
 
-      <div className="flex items-center gap-1 opacity-0 group-hover/task:opacity-100 group-focus-within/task:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/task:opacity-100 group-focus-within/task:opacity-100">
         <button
           type="button"
           onClick={isEditing ? handleCancelEdit : handleStartEdit}

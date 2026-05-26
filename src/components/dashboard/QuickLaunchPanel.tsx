@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/tooltip"
 import { Globe, MoreHorizontal } from "lucide-react"
 import { fetchQuickLinkMetadata, normalizeUrl } from "@/lib/quick-link-metadata"
-import { useDashboardState } from "@/context/dashboard-state"
-import type { QuickLaunchItem } from "@/data/dashboard-mock"
+import {
+  useDashboardState,
+  type QuickLaunchItem,
+} from "@/context/dashboard-state"
 
 import {
   QuickLaunchEditModal,
