@@ -6,7 +6,6 @@ import {
   Search,
   Settings,
   Sun,
-  
 } from "lucide-react"
 import {
   type ChangeEvent,
@@ -65,8 +64,6 @@ function isEditableTarget(target: EventTarget | null): boolean {
   )
 }
 
-
-
 function getSpeechRecognitionCtor(): (new () => SpeechRecognition) | undefined {
   if (typeof window === "undefined") {
     return undefined
@@ -77,7 +74,6 @@ function getSpeechRecognitionCtor(): (new () => SpeechRecognition) | undefined {
 type DashboardHeaderProps = {
   onOpenAssistant?: () => void
 }
-
 
 export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
   const { theme, setTheme, searchUrlTemplate } = useTheme()
@@ -98,7 +94,7 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
   )
   const resolvedTheme: "dark" | "light" =
     theme === "system" ? systemPref : theme
-  
+
   useEffect(() => {
     return () => {
       speechRecognitionRef.current?.abort()
@@ -135,7 +131,6 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
     window.addEventListener("keydown", handleShortcut)
     return () => window.removeEventListener("keydown", handleShortcut)
   }, [])
-  
 
   const runSearchNavigation = useCallback(() => {
     const href = resolveNavigationHref(searchQuery, searchUrlTemplate)
@@ -237,9 +232,8 @@ export function DashboardHeader({ onOpenAssistant }: DashboardHeaderProps) {
   return (
     <header className="w-full">
       <div className="flex items-start justify-between gap-4 px-1">
-        
         <LiveClock />
-        
+
         <div className="flex shrink-0 items-center gap-0.5">
           <Tooltip>
             <TooltipTrigger asChild>
