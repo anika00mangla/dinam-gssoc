@@ -15,13 +15,8 @@ import { cn } from "@/lib/utils"
 
 import type { BrowserBookmark } from "@/types/browser-bookmarks"
 
-export function BookmarkLink({
-  node,
-}: {
-  node: BrowserBookmark
-}) {
-  const [faviconError, setFaviconError] =
-    useState(false)
+export function BookmarkLink({ node }: { node: BrowserBookmark }) {
+  const [faviconError, setFaviconError] = useState(false)
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -31,9 +26,7 @@ export function BookmarkLink({
   let domain = ""
 
   try {
-    domain = node.url
-      ? new URL(node.url).hostname
-      : ""
+    domain = node.url ? new URL(node.url).hostname : ""
   } catch {
     domain = ""
   }
@@ -46,7 +39,7 @@ export function BookmarkLink({
       target="_blank"
       rel="noreferrer noopener"
       className={cn(
-        "group flex items-center gap-3 rounded-xl px-2 py-2 text-sm transition-all",
+        "group flex min-w-0 items-center gap-3 overflow-hidden rounded-xl px-2 py-2 text-sm transition-all",
         "hover:bg-muted/70"
       )}
     >
@@ -56,9 +49,7 @@ export function BookmarkLink({
             src={favicon}
             alt=""
             className="size-4 object-contain"
-            onError={() =>
-              setFaviconError(true)
-            }
+            onError={() => setFaviconError(true)}
           />
         ) : null}
 
@@ -68,7 +59,7 @@ export function BookmarkLink({
         />
       </span>
 
-      <span className="min-w-0 flex-1 truncate text-sm font-medium">
+      <span className="min-w-0 flex-1 overflow-hidden truncate whitespace-nowrap text-sm font-medium">
         {node.title || node.url}
       </span>
 
@@ -82,13 +73,9 @@ export function BookmarkLink({
 
         <TooltipContent side="right">
           <div className="max-w-xs">
-            <p className="truncate font-medium">
-              {node.title}
-            </p>
+            <p className="truncate font-medium">{node.title}</p>
 
-            <p className="truncate text-xs opacity-70">
-              {node.url}
-            </p>
+            <p className="truncate text-xs opacity-70">{node.url}</p>
           </div>
         </TooltipContent>
       </Tooltip>

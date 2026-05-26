@@ -31,8 +31,8 @@ export function BookmarkNode({
         collapsible
       >
         <BookmarkFolder node={node}>
-          <div className="space-y-1">
-            {children.slice(0, 30).map((child) => (
+          <div className="min-w-0 space-y-1 overflow-hidden">
+            {children.map((child) => (
               <BookmarkNode
                 key={child.id}
                 node={child}
