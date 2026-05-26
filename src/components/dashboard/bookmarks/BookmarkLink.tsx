@@ -39,11 +39,10 @@ export function BookmarkLink({ node }: { node: BrowserBookmark }) {
       target="_blank"
       rel="noreferrer noopener"
       className={cn(
-        "group flex min-w-0 items-center gap-3 overflow-hidden rounded-xl px-2 py-2 text-sm transition-all",
-        "hover:bg-muted/70"
+        "group flex w-full max-w-full min-w-0 items-center gap-3 overflow-hidden rounded-xl px-2 py-2 text-sm transition-all"
       )}
     >
-      <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted/50">
+      <span className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted/50">
         {!faviconError ? (
           <img
             src={favicon}
@@ -59,7 +58,7 @@ export function BookmarkLink({ node }: { node: BrowserBookmark }) {
         />
       </span>
 
-      <span className="min-w-0 flex-1 overflow-hidden truncate whitespace-nowrap text-sm font-medium">
+    <span className="block min-w-0 flex-1 overflow-hidden truncate whitespace-nowrap text-sm font-medium">
         {node.title || node.url}
       </span>
 

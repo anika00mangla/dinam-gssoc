@@ -12,7 +12,7 @@ export function BookmarksSection() {
   const { bookmarks, loading } = useBrowserBookmarks()
 
   return (
-    <article className="flex h-[38rem] min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-2xl bg-card p-5 shadow-md ring-1 ring-border/40 lg:p-6">
+    <article className="flex h-[40rem] min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-2xl bg-card p-5 shadow-md ring-1 ring-border/40 lg:min-w-[22rem] lg:p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className={dashboardSectionLabelClassName}>Browser Bookmarks</h2>
 

@@ -17,27 +17,19 @@ export function BookmarkNode({
   depth?: number
 }) {
   const children =
-    node.children?.filter(
-      (child) => child.title || child.url
-    ) || []
+    node.children?.filter((child) => child.title || child.url) || []
 
-  if (
-    children.length > 0 &&
-    depth < MAX_DEPTH
-  ) {
+  if (children.length > 0 && depth < MAX_DEPTH) {
     return (
       <Accordion
         type="single"
         collapsible
+        className="w-full max-w-full min-w-0 overflow-hidden"
       >
         <BookmarkFolder node={node}>
-          <div className="min-w-0 space-y-1 overflow-hidden">
+          <div className="w-full min-w-0 max-w-full space-y-1 overflow-hidden">
             {children.map((child) => (
-              <BookmarkNode
-                key={child.id}
-                node={child}
-                depth={depth + 1}
-              />
+              <BookmarkNode key={child.id} node={child} depth={depth + 1} />
             ))}
           </div>
         </BookmarkFolder>
@@ -54,10 +46,7 @@ export function BookmarkNode({
   try {
     const parsed = new URL(node.url)
 
-    if (
-      parsed.protocol === "http:" ||
-      parsed.protocol === "https:"
-    ) {
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
       safeUrl = parsed.toString()
     }
   } catch {
