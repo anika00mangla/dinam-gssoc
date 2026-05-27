@@ -1,9 +1,7 @@
 "use client"
 
-"use client"
-
-import { Plus, Calendar, Percent } from "lucide-react"
-import { useCallback, useRef, useState } from "react"
+import { Plus } from "lucide-react"
+import { useRef, useState } from "react"
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
 import { useDashboardState } from "@/context/dashboard-state"
@@ -13,61 +11,18 @@ import { cn } from "@/lib/utils"
 
 export function TasksSection() {
   const { todos = [], addTodo, clearCompletedTodos } = useDashboardState()
+
   const [newTaskLabel, setNewTaskLabel] = useState("")
   const taskInputRef = useRef<HTMLInputElement | null>(null)
-  const [startDate, setStartDate] = useState("")
-  const [dueDate, setDueDate] = useState("")
-  const [progress, setProgress] = useState(0)
-
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editLabel, setEditLabel] = useState("")
-  const [editStartDate, setEditStartDate] = useState("")
-  const [editDueDate, setEditDueDate] = useState("")
 
   const addTask = () => {
     const label = newTaskLabel.trim()
+
     if (!label) return
+
     addTodo(label)
     setNewTaskLabel("")
     taskInputRef.current?.focus()
-    setStartDate("")
-    setDueDate("")
-    setProgress(0)
-  }
-
-  const startEditTodo = (
-    id: string,
-    label: string,
-    start: string,
-    due: string
-  ) => {
-    setEditingId(id)
-    setEditLabel(label)
-    setEditStartDate(start || "")
-    setEditDueDate(due || "")
-  }
-
-  const commitEditTodo = useCallback(() => {
-    if (!editingId) return
-    const label = editLabel.trim()
-    if (!label) {
-      setEditingId(null)
-      return
-    }
-    const currentTodo = todos?.find((t) => t.id === editingId)
-    updateTodo(editingId, {
-      label,
-      startDate: editStartDate,
-      dueDate: editDueDate,
-      progress: currentTodo?.progress,
-    })
-    setEditingId(null)
-  }, [editLabel, editStartDate, editDueDate, editingId, todos, updateTodo])
-
-  const isOverdue = (dateStr?: string, isDone?: boolean) => {
-    if (!dateStr || isDone) return false
-    const today = new Date().toISOString().split("T")[0]
-    return dateStr < today
   }
 
   const completedCount = todos.filter((t) => t.done).length
@@ -76,6 +31,7 @@ export function TasksSection() {
     <article className="flex min-h-0 flex-col rounded-[1.75rem] bg-card p-6 shadow-md ring-1 ring-border/40 lg:p-7">
       <div className="mb-6 flex shrink-0 items-center justify-between gap-3">
         <h2 className={dashboardSectionLabelClassName}>Focus items</h2>
+
         {completedCount > 0 && (
           <button
             type="button"
@@ -101,26 +57,27 @@ export function TasksSection() {
           <ul className="flex flex-col gap-3">
             {todos.map((todo) => {
               if (!todo) return null
+
               return <TaskItem key={todo.id} todo={todo} />
             })}
           </ul>
         )}
       </div>
 
-<div className="mt-4 shrink-0 space-y-3 border-t border-border/50 pt-4">
-  <input
-    ref={taskInputRef}
-    type="text"
-    value={newTaskLabel}
-    onChange={(e) => setNewTaskLabel(e.target.value)}
-    onKeyDown={(e) => {
-      if (e.key === "Enter") addTask()
-    }}
-    placeholder="New task title…"
-    className="min-w-0 flex-1 rounded-xl border border-border/80 bg-card px-3 py-2 text-sm text-card-foreground outline-none"
-  />
+      <div className="mt-4 shrink-0 space-y-3 border-t border-border/50 pt-4">
+        <input
+          ref={taskInputRef}
+          type="text"
+          value={newTaskLabel}
+          onChange={(e) => setNewTaskLabel(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") addTask()
+          }}
+          placeholder="New task title…"
+          className="min-w-0 flex-1 rounded-xl border border-border/80 bg-card px-3 py-2 text-sm text-card-foreground outline-none"
+        />
 
-  <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/30 bg-muted/40 p-2.5">
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/30 bg-muted/40 p-2.5">
           <Button
             type="button"
             variant="ghost"
