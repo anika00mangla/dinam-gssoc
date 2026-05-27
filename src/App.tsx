@@ -52,7 +52,7 @@ const App = () => {
               <TasksSection />
             </div>
           </div>
-          <div className="lg:col-span-4">
+          <div className="min-w-0 lg:col-span-3">
             <TechNewsSection />
           </div>
         </div>
