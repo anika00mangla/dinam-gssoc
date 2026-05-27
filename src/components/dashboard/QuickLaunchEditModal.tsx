@@ -1,7 +1,7 @@
 import { PlusIcon } from "@/components/animated-icons/plus-icon"
 // Note: We can reuse  existing TrashIcon from earlier or standard fallback, assuming TrashIcon is locally defined:
 import { TrashIcon } from "@/components/animated-icons/trash-icon"
-import { type Dispatch, type SetStateAction } from "react"
+import { type Dispatch, type SetStateAction, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -13,15 +13,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import type { QuickLaunchIconKey } from "@/data/dashboard-mock"
 
 const MAX_QUICK_LAUNCH_LINKS = 8
 
 export type QuickLaunchDraftSlot = {
   id?: string
-  name: string
-  href: string
-  icon?: QuickLaunchIconKey
+  title: string
+  url: string
+  description?: string
+  favicon?: string
 }
 
 type QuickLaunchEditModalProps = {
@@ -30,6 +30,7 @@ type QuickLaunchEditModalProps = {
   onDraftChange: Dispatch<SetStateAction<QuickLaunchDraftSlot[]>>
   onClose: () => void
   onSave: () => void
+  isSaving?: boolean
 }
 
 export function QuickLaunchEditModal({
@@ -38,7 +39,9 @@ export function QuickLaunchEditModal({
   onDraftChange,
   onClose,
   onSave,
+  isSaving,
 }: QuickLaunchEditModalProps) {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const removeSlot = (index: number) => {
     onDraftChange((prev) => prev.filter((_, i) => i !== index))
   }
@@ -46,7 +49,7 @@ export function QuickLaunchEditModal({
   const addSlot = () => {
     onDraftChange((prev) => {
       if (prev.length >= MAX_QUICK_LAUNCH_LINKS) return prev
-      return [...prev, { name: "", href: "" }]
+      return [...prev, { title: "", url: "" }]
     })
   }
 
@@ -54,7 +57,10 @@ export function QuickLaunchEditModal({
     <Dialog
       open={open}
       onOpenChange={(next) => {
-        if (!next) onClose()
+        if (!next) {
+          setErrorMessage(null)
+          onClose()
+        }
       }}
     >
       <DialogContent
@@ -76,49 +82,51 @@ export function QuickLaunchEditModal({
             >
               <div className="grid min-w-0 flex-1 grid-cols-1 gap-2 sm:grid-cols-2">
                 <div className="space-y-1">
-                  <label className="sr-only" htmlFor={`ql-name-${index}`}>
-                    Link {index + 1} name
+                  <label className="sr-only" htmlFor={`ql-title-${index}`}>
+                    Link {index + 1} title
                   </label>
                   <Input
-                    id={`ql-name-${index}`}
+                    id={`ql-title-${index}`}
                     type="text"
-                    value={slot.name}
-                    onChange={(e) =>
+                    value={slot.title}
+                    onChange={(e) => {
+                      setErrorMessage(null)
                       onDraftChange((prev) =>
                         prev.map((s, i) =>
                           i === index
                             ? {
                                 ...s,
-                                name: e.target.value,
+                                title: e.target.value,
                               }
                             : s
                         )
                       )
-                    }
-                    placeholder="Name"
+                    }}
+                    placeholder="Title"
                     className="rounded-xl"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="sr-only" htmlFor={`ql-href-${index}`}>
+                  <label className="sr-only" htmlFor={`ql-url-${index}`}>
                     Link {index + 1} URL
                   </label>
                   <Input
-                    id={`ql-href-${index}`}
+                    id={`ql-url-${index}`}
                     type="url"
-                    value={slot.href}
-                    onChange={(e) =>
+                    value={slot.url}
+                    onChange={(e) => {
+                      setErrorMessage(null)
                       onDraftChange((prev) =>
                         prev.map((s, i) =>
                           i === index
                             ? {
                                 ...s,
-                                href: e.target.value,
+                                url: e.target.value,
                               }
                             : s
                         )
                       )
-                    }
+                    }}
                     placeholder="https://…"
                     className="rounded-xl"
                   />
@@ -153,12 +161,54 @@ export function QuickLaunchEditModal({
             Add link
           </Button>
         </div>
+        {errorMessage ? (
+          <div className="mt-2 text-sm font-medium text-destructive">
+            {errorMessage}
+          </div>
+        ) : null}
         <DialogFooter className="mt-6">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setErrorMessage(null)
+              onClose()
+            }}
+            disabled={isSaving}
+          >
             Cancel
           </Button>
-          <Button type="button" onClick={onSave}>
-            Save
+          <Button
+            type="button"
+            onClick={() => {
+              const urls = new Set<string>()
+              for (const slot of draft) {
+                const t = slot.title.trim()
+                const u = slot.url.trim().toLowerCase()
+
+                // Ignore completely empty slots (they are just deleted on save)
+                if (!t && (!u || u === "#")) continue
+
+                // Check if they forgot the URL
+                if (!u || u === "#") {
+                  setErrorMessage("Please provide a URL for all shortcuts.")
+                  return
+                }
+
+                if (urls.has(u)) {
+                  setErrorMessage(
+                    "This link has already been added to your dashboard."
+                  )
+                  return
+                }
+                urls.add(u)
+              }
+              setErrorMessage(null)
+              onSave()
+            }}
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>
