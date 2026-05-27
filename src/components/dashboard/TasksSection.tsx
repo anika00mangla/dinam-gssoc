@@ -1,7 +1,7 @@
 "use client"
 
 import { Plus, Calendar, Percent } from "lucide-react"
-import { useCallback, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
 import { useDashboardState } from "@/context/dashboard-state"
@@ -20,6 +20,7 @@ export function TasksSection() {
   } = useDashboardState()
 
   const [newTaskLabel, setNewTaskLabel] = useState("")
+  const taskInputRef = useRef<HTMLInputElement | null>(null)
   const [startDate, setStartDate] = useState("")
   const [dueDate, setDueDate] = useState("")
   const [progress, setProgress] = useState(0)
@@ -34,6 +35,7 @@ export function TasksSection() {
     if (!label) return
     addTodo(label, startDate, dueDate, progress)
     setNewTaskLabel("")
+    taskInputRef.current?.focus()
     setStartDate("")
     setDueDate("")
     setProgress(0)
@@ -157,6 +159,7 @@ export function TasksSection() {
 
       <div className="mt-4 shrink-0 space-y-3 border-t border-border/50 pt-4">
         <input
+          ref={taskInputRef}
           type="text"
           value={newTaskLabel}
           onChange={(e) => setNewTaskLabel(e.target.value)}
