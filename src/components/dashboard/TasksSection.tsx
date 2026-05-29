@@ -1,7 +1,7 @@
 "use client"
 
 import { Plus } from "lucide-react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
 import { Button } from "@/components/ui/button"
@@ -12,12 +12,15 @@ import { TaskItem } from "./TaskItem"
 export function TasksSection() {
   const { todos = [], addTodo, toggleTodo, updateTodo, deleteTodo, clearCompletedTodos } = useDashboardState()
   const [newTaskLabel, setNewTaskLabel] = useState("")
+  const taskInputRef = useRef<HTMLInputElement | null>(null)
 
   const addTask = () => {
     const label = newTaskLabel.trim()
+
     if (!label) return
     addTodo(label, "", "", 0)
     setNewTaskLabel("")
+    taskInputRef.current?.focus()
   }
 
   const completedCount = todos.filter((t) => t.done).length
@@ -59,18 +62,29 @@ export function TasksSection() {
         )}
       </div>
 
-      <div className="mt-2 flex items-center gap-2">
-        <div className="relative flex-1">
-          <input
-            type="text"
-            value={newTaskLabel}
-            onChange={(e) => setNewTaskLabel(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") addTask()
-            }}
-            placeholder="New task title..."
-            className="h-9 w-full rounded-xl border border-transparent bg-white/5 px-4 text-xs outline-none transition-all placeholder:text-muted-foreground/30 focus:border-white/10"
-          />
+      <div className="mt-4 shrink-0 space-y-3 border-t border-border/50 pt-4">
+        <input
+          ref={taskInputRef}
+          type="text"
+          value={newTaskLabel}
+          onChange={(e) => setNewTaskLabel(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") addTask()
+          }}
+          placeholder="New task title…"
+          className="min-w-0 flex-1 rounded-xl border border-border/80 bg-card px-3 py-2 text-sm text-card-foreground outline-none"
+        />
+
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/30 bg-muted/40 p-2.5">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 text-xs text-primary"
+            onClick={addTask}
+          >
+            <Plus className="size-4" strokeWidth={2.5} /> Add
+          </Button>
         </div>
         <Button
           type="button"
