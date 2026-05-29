@@ -11,6 +11,7 @@ import { BookmarkIcon } from "@/components/animated-icons/bookmark-icon"
 import { dashboardSectionLabelClassName } from "@/components/dashboard/dashboard-section-label-classes"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { sanitizeUrl } from "@/lib/sanitizeUrl"  // ← ADD THIS
 
 import { BookmarkNode } from "@/components/dashboard/bookmarks/BookmarkNode"
 
@@ -19,7 +20,6 @@ import { useBrowserBookmarks } from "@/hooks/use-browser-bookmarks"
 export function BookmarksSection() {
   const { bookmarks, loading } = useBrowserBookmarks()
 
-  // Helper to pick icons based on title or random
   const getIconForBookmark = (title: string) => {
     const t = title.toLowerCase()
     if (t.includes("design")) return BookmarkIcon
@@ -34,15 +34,15 @@ export function BookmarksSection() {
       <div className="flex items-center justify-between mb-6">
         <h2 className={dashboardSectionLabelClassName}>Bookmarks</h2>
       </div>
-      
+
       <ul className="flex flex-col gap-2">
         {bookmarks.map((item) => {
           const Icon = getIconForBookmark(item.title)
           return (
             <li key={item.id}>
               {item.url ? (
-                <a
-                  href={item.url}
+                
+                  href={sanitizeUrl(item.url)}  // ← CHANGED
                   target="_blank"
                   rel="noreferrer noopener"
                   className={cn(
