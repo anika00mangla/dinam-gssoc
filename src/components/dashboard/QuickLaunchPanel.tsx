@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tooltip"
 import { Globe, MoreHorizontal } from "lucide-react"
 import { fetchQuickLinkMetadata, normalizeUrl } from "@/lib/quick-link-metadata"
-import { sanitizeUrl } from "@/lib/sanitizeUrl"  // ← ADD THIS
+import { sanitizeUrl } from "@/lib/sanitizeUrl"
 import {
   useDashboardState,
   type QuickLaunchItem,
@@ -157,11 +157,11 @@ export function QuickLaunchPanel() {
           <div className="mt-8 flex flex-col items-center">
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-8 w-full">
               {quickLaunchItems.slice(0, 7).map((item) => (
-                
+                <a
                   key={item.id}
-                  href={sanitizeUrl(item.url)}  // ← CHANGED
+                  href={sanitizeUrl(item.url)}
                   target="_blank"
-                  rel="noreferrer noopener"
+                  rel="noopener noreferrer"
                   className="shortcut-btn group"
                 >
                   <div className="icon-square shadow-xl group-hover:shadow-white/10 transition-shadow">
